@@ -1,0 +1,44 @@
+// Update approval by signature allows for an address to increment their on chain approval for a givent address via a signed message
+// Approvals allow for long standing and multiple use transfers vs. a single use transfer signature
+updateApproval.t.sol
+|- when the block.timestamp is greater than the expiration timestamp
+    |- it should revert
+|- when the block.timestamp is less than the expiration timestamp
+    |- when the function signature does not match `UpdateApproval(address token,uint256 id,uint256 amount,uint256 nonce,address operator,uint256 expiration)`
+        |- it should revert
+    |- when the function signature matches `UpdateApproval(address token,uint256 id,uint256 amount,uint256 nonce,address operator,uint256 expiration)`
+        |- when the token address does not match
+            |- it should revert
+        |- when the token address matches
+            |- when the token ID does not match
+                |- it should revert
+            |- when the token ID matches
+                |- when the permit amount does not match
+                    |- it should revert
+                |- when the permit amount matches
+                    |- when the operator does not match
+                        |- it should revert
+                    |- when the operator matches
+                        |- when the expiration does not match
+                            |- it should revert
+                        |- when the expiration matches
+                            |- when the master nonce does not match
+                                |- it should revert
+                            |- when the master nonce matches
+                                |- when the signer is a smart contract
+                                    |- when the smart contract implements EIP1271
+                                        |- when the smart contract returns an invalid signature
+                                            |- it should revert
+                                        |- when the smart contract returns a valid signature
+                                            |- it should increment the approval by the provided amount
+                                            |- it should set the expiration for the provided timestamp
+                                            |- it should emit an ApprovalPermit event
+                                            |- it should mark the signature nonce as used
+                                    |- when the smart contract does not implement EIP1271
+                                        |- it should revert
+                                |- when the signer is an EOA
+                                    |- it should increment the approval by the provided amount
+                                    |- it should set the expiration for the provided timestamp
+                                    |- it should emit an ApprovalPermit event
+                                    |- it should mark the signature nonce as used
+
