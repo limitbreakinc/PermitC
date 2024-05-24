@@ -1,0 +1,123 @@
+// Transfers a token from a provided address to another provided address.
+// The token must be owned by the from address.
+// The from address must have approved the transfer.
+// The from address must have approved PermitC for transfer
+// The token must be a valid ERC721 or ERC1155 token.
+// The recipient must not be address zero.
+transferFrom.t.sol
+|- when the msg.sender has approval for all tokens
+    |- when the protocol is ERC721
+        |- when the token is not a valid ERC721 token
+            |- it should revert
+        |- when the token is a valid ERC721 token
+            |- when the token is not owned by the from address
+                |- it should revert
+            |- when the token is owned by the from address
+                |- when the recipient is the zero address
+                    |- it should revert
+                |- when the recipient is not the zero address
+                    |- when the recipient is a smart contract
+                        |- when the recipient does not implement the ERC721Receiver interface
+                            |- it should revert
+                        |- when the recipient implements the ERC721Receiver interface
+                            |- when the recipient does not accept the transfer
+                                |- it should revert
+                            |- when the recipient accepts the transfer
+                                |- it should reduce the balance of the from address by 1
+                                |- it should increase the balance of the recipient by 1
+                                |- it should set the owner of the token to the recipient
+                                |- it should emit a Transfer event
+                    |- when the recipient is not a smart contract
+                        |- it should reduce the balance of the from address by 1
+                        |- it should increase the balance of the recipient by 1
+                        |- it should set the owner of the token to the recipient
+                        |- it should emit a Transfer event
+    |- when the protocol is ERC1155
+        |- when the token is not a valid ERC1155 token
+            |- it should revert
+        |- when the token is a valid ERC1155 token
+            |- when the token is not owned by the from address
+                |- it should revert
+            |- when the token is owned by the from address
+                |- when the recipient is the zero address
+                    |- it should revert
+                |- when the recipient is not the zero address
+                    |- when the recipient is a smart contract
+                        |- when the recipient does not implement the ERC1155Receiver interface
+                            |- it should revert
+                        |- when the recipient implements the ERC1155Receiver interface
+                            |- when the recipient does not accept the transfer
+                                |- it should revert
+                            |- when the recipient accepts the transfer
+                                |- it should reduce the balance of the from address by 1
+                                |- it should increase the balance of the recipient by 1
+                                |- it should emit a TransferSingle event
+                    |- when the recipient is not a smart contract
+                        |- it should reduce the balance of the from address by 1
+                        |- it should increase the balance of the recipient by 1
+                        |- it should emit a TransferSingle event
+    |- when the protocol is not ERC721 or ERC1155
+        |- it should revert
+|- when the msg.sender does not have approval for all tokens
+    |- when the approval is not set for the token
+        |- it should revert
+    |- when the approval is set for the token
+        |- when the approval expiration is in the past
+            |- it should revert
+        |- when the approval expiration is in the future or the current block.timestamp
+            |- when the approval amount is less than the amount being transferred
+                |- it should revert
+            |- when the approval amount is greater than or equal to the amount being transferred
+                |- it should decrement the approval amount by the amount being transferred
+                |- when the protocol is ERC721
+                    |- when the token is not a valid ERC721 token
+                        |- it should revert
+                    |- when the token is a valid ERC721 token
+                        |- when the token is not owned by the from address
+                            |- it should revert
+                        |- when the token is owned by the from address
+                            |- when the recipient is the zero address
+                                |- it should revert
+                            |- when the recipient is not the zero address
+                                |- when the recipient is a smart contract
+                                    |- when the recipient does not implement the ERC721Receiver interface
+                                        |- it should revert
+                                    |- when the recipient implements the ERC721Receiver interface
+                                        |- when the recipient does not accept the transfer
+                                            |- it should revert
+                                        |- when the recipient accepts the transfer
+                                            |- it should reduce the balance of the from address by 1
+                                            |- it should increase the balance of the recipient by 1
+                                            |- it should set the owner of the token to the recipient
+                                            |- it should emit a Transfer event
+                                |- when the recipient is not a smart contract
+                                    |- it should reduce the balance of the from address by 1
+                                    |- it should increase the balance of the recipient by 1
+                                    |- it should set the owner of the token to the recipient
+                                    |- it should emit a Transfer event
+                |- when the protocol is ERC1155
+                    |- when the token is not a valid ERC1155 token
+                        |- it should revert
+                    |- when the token is a valid ERC1155 token
+                        |- when the token is not owned by the from address
+                            |- it should revert
+                        |- when the token is owned by the from address
+                            |- when the recipient is the zero address
+                                |- it should revert
+                            |- when the recipient is not the zero address
+                                |- when the recipient is a smart contract
+                                    |- when the recipient does not implement the ERC1155Receiver interface
+                                        |- it should revert
+                                    |- when the recipient implements the ERC1155Receiver interface
+                                        |- when the recipient does not accept the transfer
+                                            |- it should revert
+                                        |- when the recipient accepts the transfer
+                                            |- it should reduce the balance of the from address by 1
+                                            |- it should increase the balance of the recipient by 1
+                                            |- it should emit a TransferSingle event
+                                |- when the recipient is not a smart contract
+                                    |- it should reduce the balance of the from address by 1
+                                    |- it should increase the balance of the recipient by 1
+                                    |- it should emit a TransferSingle event
+                |- when the protocol is not ERC721 or ERC1155
+                    |- it should revert

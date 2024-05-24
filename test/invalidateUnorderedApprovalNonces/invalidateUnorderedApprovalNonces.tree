@@ -1,0 +1,9 @@
+// Invalidates the provided nonce, making all signatures using it invalid.
+// A nonce can be invalidated even if it is already invalid, saving some operation cost
+invalidateUnorderedApprovalNonces.t.sol
+|- when the nonce is valid
+    |- set the bitmap storing the nonces to 1, invalidating the nonce
+    |- emit an UnorderedApprovalNonceInvalidation event
+|- when the nonce is invalid
+    |- set the bitmap storing the nonces to 1, leaving the nonce invalidated
+    |- emit an UnorderedApprovalNonceInvalidation event

@@ -1,0 +1,6 @@
+// Lockdown increments the master nonce of the msg.sender by 1
+// This invalidates all outstanding approval and permit signatures, as it is used to determine the signature's validity
+lockdown.t.sol
+|- when an address calls the lockdown function
+    |- it should increment the master nonce of the caller by 1
+    |- it should emit a Lockdown event

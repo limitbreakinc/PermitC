@@ -1,0 +1,13 @@
+// Set approval for all allows an operator to set an approval for all token IDs associated with a token address for an operator
+// The approval includes the token address, an operator, and an expiration timestamp
+// There are no restrictions on this function, any address can approve an operator to approve a token on their behalf
+// There are no restrictions on the operator, it can be any address
+// There are no restrictions on the expiration timestamp, it can be any value
+// There are no restrictions on the token address, it can be any address
+PermitC721.ApprovalTransfer.t.sol & PermitC1155.ApprovalTransfer.t.sol
+|- when the expiration is 0
+    |- it should update the packed approval found at key keccak256(abi.encode(owner, operator, _masterNonces[owner])) with the provided values and an expiration at the current block.timestamp and unlimited amount
+    |- it should emit an ApprovalForAll event
+|- when the expiration is not 0
+    |- it should update the packed approval found at key keccak256(abi.encode(owner, operator, _masterNonces[owner])) with the provided values and an expiration at the provided timestamp and unlimited amount
+    |- it should emit an ApprovalForAll event
