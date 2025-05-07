@@ -12,18 +12,23 @@ jobs:
     steps:
     - name: Checkout Source Repository
       uses: actions/checkout@v4
-    - name: Setup environment variables
-      uses: rlespinasse/github-slug-action@v4
-    - uses: webfactory/ssh-agent@v0.8.0
-      with:
-        ssh-private-key: ${{ secrets.PUBLIC_REPO_SSH_KEY }}
+
+    - name: Setup SSH Agent
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: |
+        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+        ssh-add - <<< "${{ secrets.PUBLIC_REPO_SSH_KEY }}"
+        mkdir -p ~/.ssh
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+        echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
         
     - name: Squash & Push Code to Public Repo
       run: |
         current_date=$(date '+%Y%m%d')
-        git checkout -b "$GITHUB_REF_SLUG-$current_date"
+        git checkout -b "$GITHUB_REF_NAME-$current_date"
         git config --global user.email "no-reply@limitbreak.com"
         git config --global user.name "Limit Break Inc"
-        git reset $(git commit-tree HEAD^{tree} -m "Code Release from $GITHUB_REF_SLUG-$current_date")
+        git reset $(git commit-tree HEAD^{tree} -m "Code Release from $GITHUB_REF_NAME-$current_date")
         git remote add public-repo git@github.com:limitbreakinc/PermitC.git
-        git push -f public-repo "$GITHUB_REF_SLUG-$current_date"
+        git push -f public-repo "$GITHUB_REF_NAME-$current_date"
